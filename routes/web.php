@@ -18,7 +18,7 @@ Route::get('ranking', 'RankingController@rankingHome')->name('ranking');
 Auth::routes();
 Route::post('/usuario-login', 'Auth\CustomLoginController@login')->name('custom-login');
 Route::post('/usuario-logout', 'Auth\CustomLoginController@logout')->name('custom-logout');
-Route::post('/usuario-register', 'Auth\CustomRegisterController@register')->name('custom-register');
+Route::post('/usuario-registro', 'Auth\CustomRegisterController@register')->name('custom-register');
 
 Route::middleware('auth')->group(function() {
 
