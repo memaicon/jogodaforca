@@ -47,7 +47,7 @@
                                 <li class="menu-item menu-item-has-children"><a href="#"><span>Jogar Agora</span></a>
                                     <ul class="sub-menu">
                                         <li class="menu-item @if(Request()->is('jogar')) current-menu-ancestor @endif"><a href="{{ route('play') }}"><span>Jogar (Modo Normal)</span></a></li>
-                                        <li class="menu-item @if(Request()->is('jogar/contra-o-tempo')) current-menu-ancestor @endif"><a href="{{ route('playTime') }}"><span>Jogar (Modo Contador)</span></a></li>
+                                        <li class="menu-item @if(Request()->is('jogar/contra-o-tempo')) current-menu-ancestor @endif"><a href="{{ route('playSurvivor') }}"><span>Jogar (Modo Contador)</span></a></li>
                                     </ul>
                                 </li>
                                 <li class="menu-item @if(Request()->is('ranking')) current-menu-ancestor @endif"><a href="{{ route('ranking') }}"><span>Ranking</span></a></li>
