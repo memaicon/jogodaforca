@@ -47,7 +47,7 @@ class PlayController extends Controller
         }
             
         //SEO Configurations
-        $title = 'Jogando categoria: ' . $categorie; // Max 50 Characteres
+        $title = 'Jogando (Modo Normal) categoria: ' . $categorie; // Max 50 Characteres
         $description = 'Jogo da Forca - Desenvolvido por Maicon Esperafico, Eduardo Solka e Andrey Oliveira'; // Max 160 Characteres
         SEOMeta::setTitle(\App\Helpers\Helper::config('nome-aplicacao') . ' - ' . $title);
         SEOMeta::setDescription($description);
@@ -102,16 +102,85 @@ class PlayController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function playTime()
+    public function playSurvivor()
     {
         $categories = Categorie::get();
             
         //SEO Configurations
-        $title = 'Jogar (Modo Normal)'; // Max 50 Characteres
+        $title = 'Jogar (Modo Contador)'; // Max 50 Characteres
         $description = 'Jogo da Forca - Desenvolvido por Maicon Esperafico, Eduardo Solka e Andrey Oliveira'; // Max 160 Characteres
         SEOMeta::setTitle(\App\Helpers\Helper::config('nome-aplicacao') . ' - ' . $title);
         SEOMeta::setDescription($description);
 
-        return view('site.ranking', compact('categories'))->withTitle($title);
+        return view('site.playsurvivor', compact('categories'))->withTitle($title);
+    }
+
+    /**
+     * Display the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function playSurvivorNow($slug)
+    {
+        $categorie = Categorie::where('name', 'like', '%' . $slug . '%' )->first();
+        
+        if($slug == 'geral') {
+            $word = Word::inRandomOrder()->first();
+            $categorie = 'Geral';
+        } else {
+            $word = Word::where('categorie_id', $categorie->id)->inRandomOrder()->first();
+            $categorie = $word->categorie->name;
+        }
+            
+        //SEO Configurations
+        $title = 'Jogando (Modo Contador) categoria: ' . $categorie; // Max 50 Characteres
+        $description = 'Jogo da Forca - Desenvolvido por Maicon Esperafico, Eduardo Solka e Andrey Oliveira'; // Max 160 Characteres
+        SEOMeta::setTitle(\App\Helpers\Helper::config('nome-aplicacao') . ' - ' . $title);
+        SEOMeta::setDescription($description);
+
+        $wordletters = \App\Helpers\Helper::wordLetters(str_slug($word->name));
+
+        return view('site.playingsurvivor', compact('word', 'wordletters' ))->withTitle($title);
+    }
+
+    /**
+     * Display the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function submitSurvivorLetter(Request $request)
+    {
+        $letter = $request->letter;
+
+        $word = session()->get('word');
+
+        $sessionkey = 'wordletters';
+        $data = session()->get($sessionkey);
+
+        if(!$data) {
+            session()->put($sessionkey, $letter);
+        } else {
+            session()->put($sessionkey, $data.$letter);
+        }
+
+        $wordletters = \App\Helpers\Helper::compareLetters($word, strToLower(session()->get($sessionkey)), strToLower($letter));
+
+        if((session()->get('wingame') || session()->get('gameover')) && Auth::user()) {
+            $user = User::findOrFail(Auth::user()->id);
+            $user->points_hard += session()->get('points');
+            $user->save();
+        }
+
+        return response()->json([
+            'code' => 200,
+            'wordletters' => $wordletters,
+            'error' => session()->get('lettererror'),
+            'errors' => session()->get('hangmanerrors'),
+            'points' => session()->get('points'),
+            'wingame' => session()->get('wingame'),
+            'gameover' => session()->get('gameover')
+        ]);
     }
 }
