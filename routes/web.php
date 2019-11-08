@@ -1,20 +1,26 @@
 <?php
 
-// Site
+// Home
 Route::get('/', 'HomeController@index')->name('home');
 
+// Modo Sobrevivente
+Route::get('jogar/contra-o-tempo', 'PlayController@playSurvivor')->name('playSurvivor');
+Route::get('jogar/contra-o-tempo/{slug}', 'PlayController@playSurvivorNow')->name('playSurvivorNow');
+Route::post('jogar/contra-o-tempo/letra', 'PlayController@submitSurvivorLetter')->name('submitSurvivorLetter');
+
+// Modo Normal
+Route::get('jogar', 'PlayController@play')->name('play');
+Route::get('jogar/{slug}', 'PlayController@playNow')->name('playNow');
+Route::post('jogar/letra', 'PlayController@submitLetter')->name('submitLetter');
+
+// Ranking
+Route::get('ranking', 'RankingController@rankingHome')->name('ranking');
+
+// Extras
 Route::get('avatar', 'UsersController@avatar')->name('avatar');
 Route::get('image/external', 'ImagesController@image')->name('image');
 
-Route::get('jogar/contra-o-tempo', 'PlayController@play')->name('playTime');
-Route::get('jogar', 'PlayController@play')->name('play');
-Route::get('jogar/{slug}', 'PlayController@playNow')->name('playNow');
-
-Route::post('jogar/letra', 'PlayController@submitLetter')->name('submitLetter');
-
-
-Route::get('ranking', 'RankingController@rankingHome')->name('ranking');
-
+// Autenticação
 Auth::routes();
 Route::post('/usuario-login', 'Auth\CustomLoginController@login')->name('custom-login');
 Route::post('/usuario-logout', 'Auth\CustomLoginController@logout')->name('custom-logout');
