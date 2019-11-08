@@ -65,7 +65,7 @@ class Helper
                 if ($mark==true) {
                     $wordletters .= $word[$i];
                 } else {
-                    if ($word[$i]==' ') {
+                    if ($word[$i]=='-') {
                         $wordletters .= '&nbsp;&nbsp;';
                     } else {
                         $wordletters .= '_ ';
@@ -99,7 +99,7 @@ class Helper
                 $wordletters .= $word[$i];
             } else {
                 
-                if ($word[$i]==' ') {
+                if ($word[$i]=='-') {
                     $wordletters .= '&nbsp;&nbsp;';
                 } else {
                     $wordletters .= '_ ';
